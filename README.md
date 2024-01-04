@@ -42,3 +42,5 @@ https://www.figma.com/file/YjPTkcUii1TupTeg0RsKqj/Not-to-do-List?type=design&nod
 </br>
 
 ## 📖: Libraries Used
+> react-beautiful-dnd
+> styled-components
