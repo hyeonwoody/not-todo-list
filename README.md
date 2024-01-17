@@ -44,3 +44,5 @@ https://www.figma.com/file/YjPTkcUii1TupTeg0RsKqj/Not-to-do-List?type=design&nod
 ## 📖: Libraries Used
 > react-beautiful-dnd
 > styled-components
+> recoil
+> react-hook-form

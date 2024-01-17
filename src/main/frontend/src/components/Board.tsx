@@ -1,9 +1,16 @@
 
-import {Droppable} from "react-beautiful-dnd";
+import {Draggable} from "react-beautiful-dnd";
+import {useSetRecoilState} from "recoil";
 import styled from "styled-components";
-import Task from "./Task.tsx"
-// @ts-ignore
-import Plus from "../assets/ph_plus-thin.svg";
+import AddNew from "./AddNew.tsx";
+import {todoProvider} from "../TodoProvider.tsx";
+
+
+interface CategoryProps {
+    board: string;
+    index: number;
+}
+
 
 
 const Container = styled.div`
@@ -19,6 +26,7 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     
+    //Hide scroll bar
     -ms-overflow-style: none; /* for Internet Explorer, Edge */
     scrollbar-width: none; /* for Firefox */
     overflow-y: scroll;
@@ -40,25 +48,6 @@ const Title = styled.h3`
     letter-spacing: 0;
     line-height: normal;
     top: 5px;
-`;
-
-const AddNew = styled.div`
-    display: flex;
-    align-items: center;
-    height: 24px;
-    width: 280px;
-    color: white;
-
-    & .rectangle {
-        display: flex;  // Make it a flex container
-        border: 1px solid;
-        border-color: #ffffff;
-        border-radius: 8px;
-        height: 24px;
-        width: 280px;
-        justify-content: center;  // Center the content horizontally
-        align-items: center;  // Center the content vertically
-    }
 `;
 
 const Rectangle = styled.div`
@@ -83,35 +72,64 @@ const TaskList = styled.div`
     min-height: 100px;
 `;
 
-export default function Board ({title, tasks, id}){
-    return (<Container>
-        <Title
-            style={{
-                position: "stick",
-        }}
-        >
-            {title}
-        </Title>
-        {/*<AddNew>*/}
-        {/*    <Rectangle>*/}
-        {/*        <p>Add new Prohitbition</p>*/}
-        {/*        <img src={Plus} alt="Plus Icon" style={{marginLeft: 'auto'}}/>*/}
-        {/*    </Rectangle>*/}
-        {/*</AddNew>*/}
-        <Droppable droppableId={id}>
+export default function Board ({ board, index }: CategoryProps) {
 
-        {(provided, snapshot) => {
-                <TaskList
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    isDraggingOver={snapshot.isDraggingOver}
-                >
-                    {tasks}
-                    <Task task={{ id: 123, title:"Make Progress"}}
-                          index={1}></Task>
-                    {provided.placeholder}
-                </TaskList>
-            }}
-        </Droppable>
-    </Container>);
+    const setTodos = useSetRecoilState(todoProvider);
+
+    const removeCategory = () => {
+        setTodos((allCategories) => {
+            const duplicatedCategories = { ...allCategories };
+            delete duplicatedCategories[board];
+
+
+            return duplicatedCategories;
+        });
+    };
+    const handleValid = (text: string) => {
+        text = text.trim();
+
+        if (text === "") return;
+
+        const newTask = {
+            id: Date.now(),
+            text,
+        };
+
+        setTodos((allBoards) => {
+            const targetTasks = allBoards[board];
+            const updateTargetTasks = [newTask, ...targetTasks];
+            const newTodos = {
+                ...allBoards,
+                [board]: updateTargetTasks,
+            };
+
+
+            return newTodos;
+        });
+    };
+
+        return (
+            <Draggable draggableId={board} index={index} key={board}>
+                {(provided, snapshot) => (
+                    <Container
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        isDragging={snapshot.isDragging}
+                    >
+                        <Title>
+                            <h3>{board}</h3>
+                            <button onClick={removeCategory}>
+                            </button>
+                        </Title>
+                        <AddNew
+                            onValid={handleValid}
+                            name={board}
+                            placeholder={`Add task on ${board}`}
+                        />
+                        <TaskList board={board} />
+                    </Container>
+                )}
+            </Draggable>
+        );
 }

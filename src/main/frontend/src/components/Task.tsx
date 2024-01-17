@@ -1,16 +1,23 @@
-import React from 'react';
+
 import {Draggable} from 'react-beautiful-dnd';
+import { Todo, todoProvider } from "../TodoProvider.tsx";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
+interface TaskProps {
+    index: number;
+    category: string;
+    task: Todo;
+}
+
 const Container = styled.div`
+    width: 322px;
+    height: 40px;
   border-radius: 10px;
-  box-shadow: 5px 5px 5px 2px grey;
   padding: 8px;
-  color: #000;
+  color: #FFF;
   margin-bottom: 8px;
-  min-height: 90px;
-  margin-left: 10px;
-  margin-right: 10px;
+
   background-color: ${(props) => bgcolorChange(props)};
   cursor: pointer;
   display: flex;
@@ -20,24 +27,18 @@ const Container = styled.div`
 
 const TextContent = styled.div``;
 
-const Icons = styled.div`
-  display: flex;
-  justify-content: end;
-  padding: 2px;
-`;
 function bgcolorChange(props) {
     return props.isDragging
-        ? "lightgreen"
-        : props.isDraggable
+        ? "#C1CFE5" : props.isDraggable
             ? props.isBacklog
-                ? "#F2D7D5"
+                ? "#5B7096"
                 : "#DCDCDC"
-            : props.isBacklog
-                ? "#F2D7D5"
-                : "#EAF4FC";
+            : "#5B7096";
 }
 
-export default function Task({ task, index }) {
+export default function Task({ index, task, category }: TaskProps) {
+    const setTodos = useSetRecoilState(todoProvider);
+
     return (
         <Draggable draggableId={`${task.id}`} key={task.id} index={index}>
             {(provided, snapshot) => (
@@ -47,19 +48,7 @@ export default function Task({ task, index }) {
                     ref={provided.innerRef}
                     isDragging={snapshot.isDragging}
                 >
-                    <div style={{ display: "flex", justifyContent: "start", padding: 2 }}>
-            <span>
-              <small>
-                #{task.id}
-                  {"  "}
-              </small>
-            </span>
-                    </div>
-                    <div
-                        style={{ display: "flex", justifyContent: "center", padding: 2 }}
-                    >
-                        <TextContent>{task.title}</TextContent>
-                    </div>
+                        <TextContent>{task.text}</TextContent>
                     {provided.placeholder}
                 </Container>
             )}
