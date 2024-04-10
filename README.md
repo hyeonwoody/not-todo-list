@@ -3,7 +3,7 @@
 ## 🧑‍💻: Intro
 ❓ Problem : 너무나도 흔한 todoList 앱 속에 차별화된 앱이 필요하다 😮
 
-‼ Idea : 특별한 스케줄 메모 앱, 흔하지 않은 앱을 만들어본다 🤔
+❗ Idea : 특별한 스케줄 메모 앱, 흔하지 않은 앱을 만들어본다 🤔
 
 💯 Solution : todoList 대신 하지 말아야 할 일들을 정리하는 notTodoList 앱을 만든다 😁
 
@@ -43,6 +43,9 @@ https://www.figma.com/file/YjPTkcUii1TupTeg0RsKqj/Not-to-do-List?type=design&nod
 
 ## 📖: Libraries Used
 > react-beautiful-dnd
+> 
 > styled-components
+> 
 > recoil
+> 
 > react-hook-form
