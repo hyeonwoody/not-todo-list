@@ -1,6 +1,7 @@
 package com.toyproject.notTodoList.entity.user;
 
 
+import com.toyproject.notTodoList.DTO.member.MemberDTO;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -14,6 +15,8 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+
 
     private String username;
 

@@ -12,4 +12,6 @@ public class Category {
     @ManyToOne
     @JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member;
+
+    private String name;
 }
