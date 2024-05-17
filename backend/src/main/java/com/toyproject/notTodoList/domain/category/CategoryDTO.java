@@ -1,4 +1,4 @@
-package com.toyproject.notTodoList.DTO.member;
+package com.toyproject.notTodoList.domain.category;
 
 public class CategoryDTO {
     private Long id;

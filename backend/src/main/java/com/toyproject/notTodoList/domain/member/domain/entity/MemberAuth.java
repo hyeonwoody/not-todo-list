@@ -1,8 +1,6 @@
 
-package com.toyproject.notTodoList.entity.universe;
+package com.toyproject.notTodoList.domain.member.domain.entity;
 
-import com.toyproject.notTodoList.entity.user.Auth;
-import com.toyproject.notTodoList.entity.user.Member;
 import jakarta.persistence.*;
 
 @Entity

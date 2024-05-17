@@ -1,4 +1,4 @@
-package com.toyproject.notTodoList.configuration.jdbc;
+package com.toyproject.notTodoList.core.configuration.jdbc;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

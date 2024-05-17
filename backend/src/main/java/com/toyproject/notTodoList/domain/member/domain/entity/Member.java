@@ -1,7 +1,6 @@
-package com.toyproject.notTodoList.entity.user;
+package com.toyproject.notTodoList.domain.member.domain.entity;
 
 
-import com.toyproject.notTodoList.DTO.member.MemberDTO;
 import jakarta.persistence.*;
 
 import java.util.Date;
