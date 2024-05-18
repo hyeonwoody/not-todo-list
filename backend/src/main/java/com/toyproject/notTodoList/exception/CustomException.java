@@ -1,0 +1,21 @@
+package com.toyproject.notTodoList.exception;
+
+import com.toyproject.notTodoList.core.properties.ErrorCode;
+import lombok.Getter;
+
+@Getter
+public class CustomException extends RuntimeException{
+    private final ErrorCode errorCode;
+    private final String runtimeValue;
+
+    public CustomException(ErrorCode errorCode)
+    {
+        this(errorCode, "runtimeValue가 존재하지 않습니다.");
+    }
+
+    public CustomException(ErrorCode errorCode, String runtimeValue)
+    {
+        this.errorCode = errorCode;
+        this.runtimeValue = runtimeValue;
+    }
+}
