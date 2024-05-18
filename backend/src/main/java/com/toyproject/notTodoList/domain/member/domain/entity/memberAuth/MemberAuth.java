@@ -1,6 +1,8 @@
 
-package com.toyproject.notTodoList.domain.member.domain.entity;
+package com.toyproject.notTodoList.domain.member.domain.entity.memberAuth;
 
+import com.toyproject.notTodoList.domain.auth.domain.entity.Auth;
+import com.toyproject.notTodoList.domain.member.domain.entity.Member;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,11 +15,9 @@ public class MemberAuth {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member member;  // Assuming "member" refers to User
-
+    private Member member;
     @ManyToOne
     @JoinColumn(name = "auth_id")
     private Auth auth;
-
     private boolean enabled;
 }

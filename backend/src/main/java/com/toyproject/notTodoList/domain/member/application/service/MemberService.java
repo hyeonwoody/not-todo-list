@@ -1,6 +1,8 @@
 package com.toyproject.notTodoList.domain.member.application.service;
 
-import com.toyproject.notTodoList.domain.member.application.vo.MemberDTO;
+import com.toyproject.notTodoList.core.properties.ErrorCode;
+import com.toyproject.notTodoList.domain.auth.exception.AuthException;
+import com.toyproject.notTodoList.domain.member.exception.MemberException;
 import com.toyproject.notTodoList.domain.member.infrastructure.jdbc.MemberJdbcTemplateRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +16,9 @@ public class MemberService {
         this.memberJdbcTemplateRepository = memberJdbcTemplateRepository;
     }
 
-    public Long registerMember (MemberDTO member)
-    {
-        Long id = memberJdbcTemplateRepository.create(member);
-        return id;
-    }
-
-    public boolean isUsernameTaken (String username)
-    {
-        MemberDTO member = memberJdbcTemplateRepository.readByUserName(username);
-        return member != null;
+    public void isNicknameTaken(String nickname) {
+        memberJdbcTemplateRepository.readByUsername(nickname).ifPresent(auth -> {
+            throw new MemberException(ErrorCode.MEMBER_DUPLICATE_NICKNAME);
+        });
     }
 }

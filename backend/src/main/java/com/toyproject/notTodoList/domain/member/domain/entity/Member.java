@@ -1,7 +1,10 @@
 package com.toyproject.notTodoList.domain.member.domain.entity;
 
 
+import com.toyproject.notTodoList.domain.member.domain.entity.password.domain.entity.Password;
+import com.toyproject.notTodoList.domain.member.domain.entity.profile.domain.entity.Profile;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
@@ -9,6 +12,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "member", schema = "user")
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member {
 
     @Id
@@ -19,8 +26,8 @@ public class Member {
 
     private String username;
 
-    @Enumerated(EnumType.STRING)
-    private AuthProvider authProvider;
+
+    private Integer authProvider;
 
     private Date createdAt;
 
@@ -34,6 +41,9 @@ public class Member {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Category> categories;
+
+    public void setId(Long memberId) {
+    }
 
     public enum AuthProvider {
         EXPLORE,
