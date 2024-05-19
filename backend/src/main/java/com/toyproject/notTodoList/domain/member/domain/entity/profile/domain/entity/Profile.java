@@ -24,6 +24,8 @@ public class Profile {
 
     private String nick_name;
 
+    private Integer status;
+
     private Date last_login;
 
 }
