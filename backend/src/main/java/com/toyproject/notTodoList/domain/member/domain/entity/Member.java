@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -22,13 +23,13 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-
+    @Column
     private String username;
 
-
+    @Column
     private Integer authProvider;
 
+    @Column
     private Date createdAt;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -39,8 +40,8 @@ public class Member {
     @JoinColumn(name = "id")
     private Profile profile;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Category> categories;
+    @ManyToMany(mappedBy = "members") //mappedBy refers to the field in Course
+    private Set<Category> categories;
 
     public void setId(Long memberId) {
     }
