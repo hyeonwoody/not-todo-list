@@ -1,5 +1,9 @@
 package com.toyproject.notTodoList.domain.member.domain.entity.memberAuth.infrastructure;
 
+import com.toyproject.notTodoList.domain.auth.domain.entity.Auth;
+import com.toyproject.notTodoList.domain.member.domain.entity.Member;
+import com.toyproject.notTodoList.domain.member.domain.entity.memberAuth.MemberAuth;
+import com.toyproject.notTodoList.domain.member.domain.entity.password.domain.entity.Password;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -7,6 +11,8 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class MemberAuthJdbcTemplateRepository {
@@ -38,4 +44,32 @@ public class MemberAuthJdbcTemplateRepository {
             return 0L;
         }
     }
+
+    public List<MemberAuth> getPermission(Long memberId) {
+        String sql =    "SELECT id FROM member_auth WHERE member_id = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum)-> MemberAuth.builder()
+                .id(rs.getLong("id"))
+                .build(), memberId);
+    }
+
+    //    public List<Auth> getPermission(Long memberId) {
+//        String sql =    "SELECT a.name " +
+//                        "FROM auth a " +
+//                        "JOIN member_auth ma ON a.id = ma.auth_id " +
+//                        "JOIN member m ON ma.member_id = m.id " +
+//                        "WHERE m.id = ?";
+//        return jdbcTemplate.query(sql, (rs, rowNum)-> Auth.builder()
+//                .name(rs.getString("name"))
+//                .build(), memberId);
+//    }
+
+    public Optional <MemberAuth> findByMemberAuthId(Long id) {
+        String sql = "SELECT id FROM member_auth WHERE id = ?";
+        List<MemberAuth> auth = jdbcTemplate.query(sql, (rs, rowNum) -> MemberAuth.builder()
+                        .id(rs.getLong("id"))
+                        .build()
+                , id);
+        return auth.stream().findFirst();
+    }
+
 }

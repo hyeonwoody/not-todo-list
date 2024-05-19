@@ -22,7 +22,7 @@ public class MemberJdbcTemplateRepository {
 
     public Long create (Member member)
     {
-        String sql = "INSERT INTO member (username, auth_provider, created_at) VALUE (?, ?, ?)";
+        String sql = "INSERT INTO member (username, auth_provider, role, created_at) VALUE (?, ?, ?, ?)";
         Timestamp now = new Timestamp(System.currentTimeMillis());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int rowsAffected = jdbcTemplate.update(connection -> {
@@ -30,7 +30,8 @@ public class MemberJdbcTemplateRepository {
                     .prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                 ps.setString(1, member.getUsername());
                 ps.setString(2, member.getAuthProvider().toString());
-                ps.setTimestamp(3, now);
+                ps.setInt(3, member.getRole());
+                ps.setTimestamp(4, now);
                 return ps;
         }, keyHolder);
         if (rowsAffected == 1) {
@@ -53,10 +54,12 @@ public class MemberJdbcTemplateRepository {
 
     public Optional<Member> readByUsername(String username)
     {
-        String sql = "SELECT id, auth_provider, created_at FROM member WHERE username = ? LIMIT 1";
+        String sql = "SELECT id, auth_provider, role, created_at FROM member WHERE username = ? LIMIT 1";
         List<Member> retMember = jdbcTemplate.query(sql, (rs, rowNum) -> Member.builder()
                 .id(rs.getLong("id"))
+                .username(username)
                 .authProvider(rs.getInt("auth_provider"))
+                .role(rs.getInt("role"))
                 .build()
                 , username);
         return retMember.stream().findFirst();

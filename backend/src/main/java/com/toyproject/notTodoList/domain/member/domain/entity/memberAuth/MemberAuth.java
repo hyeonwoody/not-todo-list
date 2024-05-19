@@ -4,9 +4,14 @@ package com.toyproject.notTodoList.domain.member.domain.entity.memberAuth;
 import com.toyproject.notTodoList.domain.auth.domain.entity.Auth;
 import com.toyproject.notTodoList.domain.member.domain.entity.Member;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "member_auth", schema = "universe")
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberAuth {
 
     @Id

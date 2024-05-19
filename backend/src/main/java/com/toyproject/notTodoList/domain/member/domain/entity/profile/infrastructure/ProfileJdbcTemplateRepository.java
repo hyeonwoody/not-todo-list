@@ -1,5 +1,6 @@
 package com.toyproject.notTodoList.domain.member.domain.entity.profile.infrastructure;
 
+import com.toyproject.notTodoList.domain.member.domain.entity.password.domain.entity.Password;
 import com.toyproject.notTodoList.domain.member.domain.entity.profile.domain.entity.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ProfileJdbcTemplateRepository {
@@ -28,7 +31,7 @@ public class ProfileJdbcTemplateRepository {
             PreparedStatement ps = connection
                     .prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setLong(1, memberId);
-            ps.setString(2, profile.getNick_name());
+            ps.setString(2, profile.getNickname());
             return ps;
         }, keyHolder);
         if (rowsAffected == 1) {
@@ -36,5 +39,14 @@ public class ProfileJdbcTemplateRepository {
         } else {
             return 0L;
         }
+    }
+
+    public Optional<Profile> readByMemberId(Long memberId) {
+        String sql = "SELECT nick_name FROM profile WHERE member_id = ? LIMIT 1";
+        List<Profile> profile = jdbcTemplate.query(sql, (rs, rowNum) -> Profile.builder()
+                        .nickname(rs.getString("nick_name"))
+                        .build()
+                , memberId);
+        return profile.stream().findFirst();
     }
 }

@@ -7,6 +7,8 @@ import com.toyproject.notTodoList.domain.member.domain.entity.profile.domain.ent
 import lombok.Builder;
 import lombok.Getter;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 @Getter
 @Builder
 public class RegisterRequest {
@@ -27,19 +29,20 @@ public class RegisterRequest {
     public Member toMemberEntity() {
         return Member.builder()
                 .username(username)
+                .role(1)
                 .authProvider(authProvider)
                 .build();
     }
 
-    public Password toPasswordEntity() {
+    public Password toPasswordEntity(PasswordEncoder passwordEncoder) {
         return Password.builder()
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .build();
     }
 
     public Profile toProfileEntity() {
         return Profile.builder()
-                .nick_name(nickname)
+                .nickname(nickname)
                 .build();
     }
 }

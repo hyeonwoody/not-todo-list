@@ -22,7 +22,8 @@ public class Profile {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String nick_name;
+    @Column (name = "nick_name")
+    private String nickname;
 
     private Integer status;
 

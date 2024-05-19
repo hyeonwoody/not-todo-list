@@ -1,5 +1,6 @@
 package com.toyproject.notTodoList.domain.member.domain.entity.password.infrastructure.jdbc;
 
+import com.toyproject.notTodoList.domain.member.domain.entity.Member;
 import com.toyproject.notTodoList.domain.member.domain.entity.password.domain.entity.Password;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PasswordJdbcTemplateRepository {
@@ -37,4 +40,14 @@ public class PasswordJdbcTemplateRepository {
             return 0L;
         }
     }
+
+    public Optional<Password> readByMemberId(Long memberId) {
+        String sql = "SELECT password FROM password WHERE member_id = ? LIMIT 1";
+        List<Password> password = jdbcTemplate.query(sql, (rs, rowNum) -> Password.builder()
+                        .password(rs.getString("password"))
+                        .build()
+                , memberId);
+        return password.stream().findFirst();
+    }
 }
+

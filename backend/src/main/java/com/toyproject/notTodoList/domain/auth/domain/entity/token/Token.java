@@ -1,4 +1,4 @@
-package com.toyproject.notTodoList.domain.auth.domain.entity;
+package com.toyproject.notTodoList.domain.auth.domain.entity.token;
 
 import com.toyproject.notTodoList.domain.member.domain.entity.memberAuth.MemberAuth;
 import jakarta.persistence.*;
@@ -9,6 +9,7 @@ import java.util.Date;
 @Entity
 @Table(name = "token", schema = "universe")
 @Getter
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Token {
 
@@ -21,13 +22,14 @@ public class Token {
 
     @OneToOne (optional = false, orphanRemoval = true)
     @JoinColumn (name = "auth_id")
-    private MemberAuth auth;
+    private MemberAuth memberAuth;
 
     @Builder
-    private Token (String refreshToken, Date refreshTokenExpiryDate, MemberAuth auth){
+    private Token (Long id, String refreshToken, Date refreshTokenExpiryDate, MemberAuth memberAuth){
+        this.id = id;
         this.refreshToken = refreshToken;
         this.refreshTokenExpiryDate = refreshTokenExpiryDate;
-        this.auth = auth;
+        this.memberAuth = memberAuth;
     }
 
     public void updateRefreshToken(String refreshToken, Date refreshTokenExpiryDate){
