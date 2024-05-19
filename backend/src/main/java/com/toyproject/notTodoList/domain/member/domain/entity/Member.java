@@ -26,8 +26,11 @@ public class Member {
     @Column
     private String username;
 
-    @Column
+    @Column (nullable = false)
     private Integer authProvider;
+
+    @Column (nullable = false)
+    private Integer role;
 
     @Column
     private Date createdAt;
@@ -46,9 +49,5 @@ public class Member {
     public void setId(Long memberId) {
     }
 
-    public enum AuthProvider {
-        EXPLORE,
-        LOCAL,
-        GOOGLE
-    }
+
 }
