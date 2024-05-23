@@ -1,5 +1,6 @@
 package com.toyproject.notTodoList.domain.member.domain.entity.profile.infrastructure;
 
+import com.toyproject.notTodoList.domain.member.domain.entity.Member;
 import com.toyproject.notTodoList.domain.member.domain.entity.password.domain.entity.Password;
 import com.toyproject.notTodoList.domain.member.domain.entity.profile.domain.entity.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,6 +48,17 @@ public class ProfileJdbcTemplateRepository {
                         .nickname(rs.getString("nick_name"))
                         .build()
                 , memberId);
+        return profile.stream().findFirst();
+    }
+
+    public Optional<Profile> readByNickname(String nickname)
+    {
+        String sql = "SELECT id FROM profile WHERE nickname = ? LIMIT 1";
+        List<Profile> profile = jdbcTemplate.query(sql, (rs, rowNum) -> Profile.builder()
+                        .id(rs.getLong("id"))
+                        .nickname(nickname)
+                        .build()
+                , nickname);
         return profile.stream().findFirst();
     }
 }

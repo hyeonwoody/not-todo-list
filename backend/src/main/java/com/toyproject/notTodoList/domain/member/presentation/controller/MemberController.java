@@ -14,9 +14,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-    @GetMapping("/exists/{nickname}")
-    public ResponseEntity<String> checkDuplication (@PathVariable @NotEmpty String nickname) {
-        memberService.isNicknameTaken(nickname);
-        return ResponseEntity.ok("사용 가능한 닉네임 입니다.");
-    }
+
 }

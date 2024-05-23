@@ -16,9 +16,5 @@ public class MemberService {
         this.memberJdbcTemplateRepository = memberJdbcTemplateRepository;
     }
 
-    public void isNicknameTaken(String nickname) {
-        memberJdbcTemplateRepository.readByUsername(nickname).ifPresent(auth -> {
-            throw new MemberException(ErrorCode.MEMBER_DUPLICATE_NICKNAME);
-        });
-    }
+
 }
