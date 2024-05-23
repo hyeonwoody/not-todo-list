@@ -45,13 +45,6 @@ public class MemberAuthJdbcTemplateRepository {
         }
     }
 
-    public List<MemberAuth> getPermission(Long memberId) {
-        String sql =    "SELECT id FROM member_auth WHERE member_id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum)-> MemberAuth.builder()
-                .id(rs.getLong("id"))
-                .build(), memberId);
-    }
-
     //    public List<Auth> getPermission(Long memberId) {
 //        String sql =    "SELECT a.name " +
 //                        "FROM auth a " +
@@ -71,5 +64,6 @@ public class MemberAuthJdbcTemplateRepository {
                 , id);
         return auth.stream().findFirst();
     }
+
 
 }

@@ -4,6 +4,7 @@ import com.toyproject.notTodoList.domain.auth.presentation.dto.req.RegisterAPIRe
 import com.toyproject.notTodoList.domain.member.domain.entity.Member;
 import com.toyproject.notTodoList.domain.member.domain.entity.password.domain.entity.Password;
 import com.toyproject.notTodoList.domain.member.domain.entity.profile.domain.entity.Profile;
+import com.toyproject.notTodoList.domain.member.domain.entity.role.Role;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -29,7 +30,7 @@ public class RegisterRequest {
     public Member toMemberEntity() {
         return Member.builder()
                 .username(username)
-                .role(1)
+                .role(Role.MEMBER_BASIC.getValue())
                 .authProvider(authProvider)
                 .build();
     }

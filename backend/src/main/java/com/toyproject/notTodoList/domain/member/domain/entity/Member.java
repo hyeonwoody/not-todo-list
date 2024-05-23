@@ -1,7 +1,7 @@
 package com.toyproject.notTodoList.domain.member.domain.entity;
 
 
-import com.toyproject.notTodoList.domain.auth.domain.entity.role.Role;
+import com.toyproject.notTodoList.domain.member.domain.entity.role.Role;
 import com.toyproject.notTodoList.domain.member.domain.entity.password.domain.entity.Password;
 import com.toyproject.notTodoList.domain.member.domain.entity.profile.domain.entity.Profile;
 import jakarta.persistence.*;
@@ -50,22 +50,10 @@ public class Member {
     @ManyToMany(mappedBy = "members") //mappedBy refers to the field in Course
     private Set<Category> categories;
 
-    public void setId(Long memberId) {;
-    }
-
     public List<GrantedAuthority> getAuthorities() {
-
-        if (role == 1){
-            return Stream.of(new SimpleGrantedAuthority(Role.MEMBER.getKey()) )
-                    .map(GrantedAuthority.class::cast)
-                    .toList();
-        }
-
-        else {
-            return Stream.of(new SimpleGrantedAuthority(Role.ADMIN.getKey()) )
-                    .map(GrantedAuthority.class::cast)
-                    .toList();
-        }
+        return Stream.of(new SimpleGrantedAuthority(Role.values()[role].getKey()))
+                .map(GrantedAuthority.class::cast)
+                .toList();
     }
 
 }
