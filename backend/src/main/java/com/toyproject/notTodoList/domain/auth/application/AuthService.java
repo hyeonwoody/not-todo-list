@@ -4,7 +4,6 @@ import com.toyproject.notTodoList.core.properties.ErrorCode;
 import com.toyproject.notTodoList.domain.auth.application.dto.res.LoginResponse;
 import com.toyproject.notTodoList.domain.auth.application.dto.res.RegisterResponse;
 import com.toyproject.notTodoList.domain.auth.application.dto.req.RegisterRequest;
-import com.toyproject.notTodoList.domain.auth.domain.entity.Auth;
 import com.toyproject.notTodoList.domain.auth.domain.entity.token.Token;
 import com.toyproject.notTodoList.domain.auth.domain.entity.token.infrastructure.TokenJdbcTemplateRepository;
 import com.toyproject.notTodoList.domain.auth.exception.AuthException;
@@ -16,7 +15,6 @@ import com.toyproject.notTodoList.domain.member.domain.entity.password.domain.en
 import com.toyproject.notTodoList.domain.member.domain.entity.password.infrastructure.jdbc.PasswordJdbcTemplateRepository;
 import com.toyproject.notTodoList.domain.member.domain.entity.profile.domain.entity.Profile;
 import com.toyproject.notTodoList.domain.member.domain.entity.profile.infrastructure.ProfileJdbcTemplateRepository;
-import com.toyproject.notTodoList.domain.member.domain.entity.role.Role;
 import com.toyproject.notTodoList.domain.member.infrastructure.jdbc.MemberJdbcTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -78,16 +77,21 @@ public class AuthService {
 
 
     public void updateRefreshToken(LoginResponse response, JwtToken jwttoken) {
-        Token token = tokenJdbcTemplateRepository.readById(response.getAuths().get(0).getId())
-                .orElseGet(()->{
-                    MemberAuth memberAuth = memberAuthJdbcTemplateRepository.findByMemberAuthId(response.getAuths().get(0).getId())
-                            .orElseThrow(()-> new AuthException(ErrorCode.USER_NOT_FOUND));
-                    return tokenJdbcTemplateRepository.create (Token.builder()
-                            .memberAuth(memberAuth)
-                            .refreshToken(jwttoken.getRefreshToken())
-                            .refreshTokenExpiryDate(jwttoken.getRefreshTokenExpiryDate())
-                            .build());
-                });
-        token.updateRefreshToken(jwttoken.getRefreshToken(), jwttoken.getRefreshTokenExpiryDate());
+        Long authId = response.getAuths().get(0).getId();
+        Optional<Token> optionalToken = tokenJdbcTemplateRepository.readById(authId);
+
+        if (optionalToken.isPresent()) {
+            Token token = optionalToken.get();
+            token.updateRefreshToken(jwttoken.getRefreshToken(), jwttoken.getRefreshTokenExpiryDate());
+            tokenJdbcTemplateRepository.update(token);
+        } else {
+            MemberAuth memberAuth = memberAuthJdbcTemplateRepository.findByMemberAuthId(authId)
+                    .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
+            tokenJdbcTemplateRepository.create(Token.builder()
+                    .memberAuth(memberAuth)
+                    .refreshToken(jwttoken.getRefreshToken())
+                    .refreshTokenExpiryDate(jwttoken.getRefreshTokenExpiryDate())
+                    .build());
+        }
     }
 }
