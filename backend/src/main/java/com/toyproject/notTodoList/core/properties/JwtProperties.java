@@ -19,16 +19,20 @@ public class JwtProperties {
     @Setter
     private String header;
     @Setter
+
+
     private String issuer;
     @Value("${my.database.driverClassName}")
     private String clientSecret;
     @Setter
+    @Value("${my.jwt.token.accessTokenExpiryHour}")
     private int accessTokenExpiryHour;
     @Setter
+    @Value("${my.jwt.token.refreshTokenExpiryHour}")
     private int refreshTokenExpiryHour;
 
     public void setClientSecret(String clientSecret) {
         this.clientSecret = new SecretKeySpec(Base64.getDecoder().decode(clientSecret),
-                "HmacSHA256").toString();
+                "HmacSHA512").toString();
     }
 }

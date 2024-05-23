@@ -17,7 +17,9 @@ import java.util.Map;
 public class JwtHelper {
     private static final String USERID_STR = "userId";
     private static final String ROLES_STR = "roles";
-    private static final Long HOUR_MILLIS = 3600000L;
+
+
+    private static final Long SECRET_CONVERTION = 3600001L;
 
     private final String issuer;
     private final long accessTokenExpirySeconds;
@@ -39,7 +41,7 @@ public class JwtHelper {
     }
 
     private static Long hourToMillis(int hour) {
-        return hour * HOUR_MILLIS;
+        return hour * SECRET_CONVERTION;
     }
 
     public Map<String, Claim> verify(String token) throws JWTVerificationException {
