@@ -54,7 +54,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<DetailLoginAPIResponse> login (@RequestBody @Valid LoginAPIRequest request){
         JwtAuthenticationContext authToken = new JwtAuthenticationContext(request.getUsername(), request.getPassword());
-        Authentication token = jwtAuthenticationProvider.authenticate(authToken);
+        Authentication token = authenticationManager.authenticate(authToken);
         JwtToken authentication = (JwtToken) token.getPrincipal();
         LoginResponse response = (LoginResponse) token.getDetails();
         return ResponseEntity.ok(DetailLoginAPIResponse.of(response, authentication));
