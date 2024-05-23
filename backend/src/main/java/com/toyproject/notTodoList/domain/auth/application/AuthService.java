@@ -16,6 +16,7 @@ import com.toyproject.notTodoList.domain.member.domain.entity.password.domain.en
 import com.toyproject.notTodoList.domain.member.domain.entity.password.infrastructure.jdbc.PasswordJdbcTemplateRepository;
 import com.toyproject.notTodoList.domain.member.domain.entity.profile.domain.entity.Profile;
 import com.toyproject.notTodoList.domain.member.domain.entity.profile.infrastructure.ProfileJdbcTemplateRepository;
+import com.toyproject.notTodoList.domain.member.domain.entity.role.Role;
 import com.toyproject.notTodoList.domain.member.infrastructure.jdbc.MemberJdbcTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,8 @@ public class AuthService {
             throw new AuthException(ErrorCode.REGISTER_MEMBER_ERROR);
         Long passwordId = passwordJdbcTemplateRepository.create(memberId, request.toPasswordEntity(passwordEncoder));
         Long profileId = profileJdbcTemplateRepository.create(memberId, request.toProfileEntity());
-        Long memberAuthId = memberAuthJdbcTemplateRepository.giveBasicPermission(memberId);
+
+        Long memberAuthId = memberJdbcTemplateRepository.giveBasicPermission(memberId);
         return RegisterResponse.from(memberAuthId);
     }
 
@@ -63,7 +65,7 @@ public class AuthService {
         Profile profile = profileJdbcTemplateRepository.readByMemberId(member.getId())
                 .orElseThrow(() ->
             new AuthException(ErrorCode.USER_NOT_FOUND));
-        List<MemberAuth> auths = memberAuthJdbcTemplateRepository.getPermission(member.getId());
+        List<MemberAuth> auths = memberJdbcTemplateRepository.getPermission(member.getId());
         return LoginResponse.from(member, profile, auths);
     }
 
@@ -75,10 +77,10 @@ public class AuthService {
     }
 
 
-    public void updateRefreshToken(Long memberAuthId, JwtToken jwttoken) {
-        Token token = tokenJdbcTemplateRepository.readById(memberAuthId)
+    public void updateRefreshToken(LoginResponse response, JwtToken jwttoken) {
+        Token token = tokenJdbcTemplateRepository.readById(response.getAuths().get(0).getId())
                 .orElseGet(()->{
-                    MemberAuth memberAuth = memberAuthJdbcTemplateRepository.findByMemberAuthId(memberAuthId)
+                    MemberAuth memberAuth = memberAuthJdbcTemplateRepository.findByMemberAuthId(response.getAuths().get(0).getId())
                             .orElseThrow(()-> new AuthException(ErrorCode.USER_NOT_FOUND));
                     return tokenJdbcTemplateRepository.create (Token.builder()
                             .memberAuth(memberAuth)
@@ -87,6 +89,5 @@ public class AuthService {
                             .build());
                 });
         token.updateRefreshToken(jwttoken.getRefreshToken(), jwttoken.getRefreshTokenExpiryDate());
-        tokenJdbcTemplateRepository.update(token);
     }
 }

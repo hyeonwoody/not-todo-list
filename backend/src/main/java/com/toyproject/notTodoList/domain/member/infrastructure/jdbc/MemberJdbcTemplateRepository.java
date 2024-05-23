@@ -45,17 +45,15 @@ public class MemberJdbcTemplateRepository {
             return 0L;
         }
     }
-
-    public Optional<Member> readById (long id)
-    {
-        String sql = "SELECT id, auth_provider, created_at FROM member WHERE id = ? LIMIT 1";
+    public Optional<Member> readByUsername(String username) {
+        String sql = "SELECT id, auth_provider, created_at, role FROM member WHERE username = ? LIMIT 1";
         List<Member> member = jdbcTemplate.query(sql, (rs, rowNum) -> Member.builder()
                 .id(rs.getLong("id"))
                 .authProvider(rs.getInt("auth_provider"))
                 .role(rs.getInt("role"))
                 .createdAt(rs.getDate("created_at"))
                 .build()
-                , id);
+                , username);
         return member.stream().findFirst();
     }
 
