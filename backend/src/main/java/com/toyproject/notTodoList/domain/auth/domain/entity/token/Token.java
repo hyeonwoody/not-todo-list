@@ -20,8 +20,8 @@ public class Token {
     private String refreshToken;
     private Date refreshTokenExpiryDate;
 
-    @OneToOne (optional = false, orphanRemoval = true)
-    @JoinColumn (name = "auth_id")
+    @OneToOne (orphanRemoval = true)
+    @JoinColumn (name = "member_auth_id")
     private MemberAuth memberAuth;
 
     @Builder

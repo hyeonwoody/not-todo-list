@@ -18,7 +18,8 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+
+    @OneToOne (orphanRemoval = true)
     @JoinColumn(name = "member_id")
     private Member member;
 
