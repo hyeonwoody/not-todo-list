@@ -45,6 +45,31 @@ public class MemberJdbcTemplateRepository {
             return 0L;
         }
     }
+
+    public Optional<Member> readByEmail(Integer authProvider, String email) {
+        String sql = "SELECT id, auth_provider, created_at, username, role FROM member WHERE auth_provider = ? AND username = ?";
+        try (PreparedStatement ps = jdbcTemplate.getDataSource().getConnection().prepareStatement(sql)) {
+            ps.setInt(1, authProvider);
+            ps.setString(2, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Member member = Member.builder()
+                        .id(rs.getLong("id"))
+                        .authProvider(rs.getInt("auth_provider"))
+                        .createdAt(rs.getDate("created_at"))
+                        .username(rs.getString("username"))
+                        .role(rs.getInt("role"))
+                        .build();
+                return Optional.of(member);
+            } else {
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            // Handle SQL exceptions appropriately
+            throw new RuntimeException(e); // Or a more specific exception type
+        }
+    }
+
     public Optional<Member> readByUsername(String username) {
         String sql = "SELECT id, auth_provider, created_at, role FROM member WHERE username = ? LIMIT 1";
         List<Member> member = jdbcTemplate.query(sql, (rs, rowNum) -> Member.builder()
