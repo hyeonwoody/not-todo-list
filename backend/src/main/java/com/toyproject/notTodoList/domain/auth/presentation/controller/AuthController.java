@@ -6,7 +6,6 @@ import com.toyproject.notTodoList.domain.auth.application.dto.res.LoginResponse;
 import com.toyproject.notTodoList.domain.auth.application.dto.res.RegisterResponse;
 
 import com.toyproject.notTodoList.domain.auth.jwt.JwtAuthenticationContext;
-import com.toyproject.notTodoList.domain.auth.jwt.JwtAuthenticationProvider;
 import com.toyproject.notTodoList.domain.auth.jwt.JwtToken;
 import com.toyproject.notTodoList.domain.auth.presentation.dto.req.LoginAPIRequest;
 import com.toyproject.notTodoList.domain.auth.presentation.dto.req.RegisterAPIRequest;
@@ -28,8 +27,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-
-    private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final AuthenticationManager authenticationManager;
     private final AuthService authService;
 
@@ -54,6 +51,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<DetailLoginAPIResponse> login (@RequestBody @Valid LoginAPIRequest request){
         JwtAuthenticationContext authToken = new JwtAuthenticationContext(request.getUsername(), request.getPassword());
+        //Todo : authenticationManager vs Provider
         Authentication token = authenticationManager.authenticate(authToken);
         JwtToken authentication = (JwtToken) token.getPrincipal();
         LoginResponse response = (LoginResponse) token.getDetails();

@@ -45,11 +45,9 @@ public class AuthService {
             throw new AuthException(ErrorCode.REGISTER_MEMBER_ERROR);
         Long passwordId = passwordJdbcTemplateRepository.create(memberId, request.toPasswordEntity(passwordEncoder));
         Long profileId = profileJdbcTemplateRepository.create(memberId, request.toProfileEntity());
-
         Long memberAuthId = memberJdbcTemplateRepository.giveBasicPermission(memberId);
         return RegisterResponse.from(memberAuthId);
     }
-
 
     //Todo : Improve concurrency with Thread
     @Transactional(readOnly = true)
@@ -74,7 +72,6 @@ public class AuthService {
             throw new AuthException(ErrorCode.MEMBER_DUPLICATE_USERNAME);
         });
     }
-
 
     public void updateRefreshToken(LoginResponse response, JwtToken jwttoken) {
         Long authId = response.getAuths().get(0).getId();

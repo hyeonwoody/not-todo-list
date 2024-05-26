@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -36,18 +37,32 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
+                //.cors(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
 
-                //Set as STATELESS since not using sessions
+
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS))
-
+                                SessionCreationPolicy.STATELESS)) //Set as STATELESS since not using sessions
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/register").permitAll() //Register API
-                        .requestMatchers("/api/v1/auth/login").permitAll()) //Login API
-                .authorizeHttpRequests(authorize->
-                        authorize.anyRequest().authenticated()) //Unauthorized access to others is not allowed
-//                .oauth2Login(withDefaults())
+                        .requestMatchers("/api/v1/auth/login").permitAll()//Login API
+//                        .requestMatchers("/login/oauth2/callback/**").permitAll()
+                        .anyRequest().authenticated() //Unauthorized access to others is not allowed
+                )
+
+                .oauth2Login(oauth -> oauth
+                        //.authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/login/oauth2/callback/*"))
+                        .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
+                        )
+
+                //.httpBasic(withDefaults())
+
+
 //                .logout(logout -> logout
 //                        .addLogoutHandler(logoutHandler()))
                 .build();
