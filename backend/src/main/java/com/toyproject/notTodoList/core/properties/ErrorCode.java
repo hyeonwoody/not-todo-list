@@ -12,10 +12,11 @@ import static org.springframework.http.HttpStatus.*;
 @AllArgsConstructor
 public enum ErrorCode {
     //400
-    AUTH_INCORRECT_PASSWORD(BAD_REQUEST, "비밀번호가 일치하지 않습니다"),
+    AUTH_INCORRECT_PASSWORD(BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+    ILLEGAL_REGISTRATION_ID(BAD_REQUEST, "유효하지 않은 등록 ID 입니다."),
 
     //404
-    USER_NOT_FOUND(NOT_FOUND, "사용자를 찾을 수 없습니다"),
+    USER_NOT_FOUND(NOT_FOUND, "사용자를 찾을 수 없습니다."),
 
     //409
     MEMBER_DUPLICATE_USERNAME(CONFLICT, "이미 존재하는 아이디 입니다."),
