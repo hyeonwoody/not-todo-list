@@ -1,12 +1,10 @@
-package com.toyproject.notTodoList.domain.auth.google;
+package com.toyproject.notTodoList.domain.auth.oauth2;
 
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.toyproject.notTodoList.core.properties.GoogleProperties;
 import com.toyproject.notTodoList.domain.auth.jwt.JwtToken;
 import com.toyproject.notTodoList.util.DateStrategy;
-import lombok.Builder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -15,7 +13,7 @@ import static com.auth0.jwt.JWT.create;
 import static com.auth0.jwt.JWT.require;
 
 @Component
-public class GoogleHelper {
+public class OAuth2Helper {
 
     private static final String USERID_STR = "userId";
     private static final String ROLES_STR = "roles";
@@ -32,7 +30,7 @@ public class GoogleHelper {
 
     private GoogleProperties googleProperties;
 
-    public GoogleHelper(GoogleProperties googleProperties){
+    public OAuth2Helper(GoogleProperties googleProperties){
         this.issuer = googleProperties.getIssuer();
         this.accessTokenExpirySeconds = hourToMillis(googleProperties.getAccessTokenExpiryHour());
         this.refreshTokenExpirySeconds = hourToMillis(googleProperties.getRefreshTokenExpiryHour());

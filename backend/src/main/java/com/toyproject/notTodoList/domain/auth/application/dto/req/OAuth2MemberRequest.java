@@ -20,10 +20,12 @@ public class OAuth2MemberRequest {
     private String email;
     private String profile;
     private Integer authProvider;
+    private Map<String, Object> attributes;
 
     public static OAuth2MemberRequest of(String registrationId, Map<String, Object> oAuth2UserAttributes) {
         return switch (registrationId){
             case "google" -> ofGoogle(oAuth2UserAttributes);
+            case "naver" -> ofNaver(oAuth2UserAttributes);
             default -> throw new AuthException(ErrorCode.ILLEGAL_REGISTRATION_ID);
         };
     }
@@ -34,6 +36,17 @@ public class OAuth2MemberRequest {
                 .email((String) attributes.get("email"))
                 .profile((String) attributes.get("picture"))
                 .authProvider(AuthProvider.GOOGLE.ordinal())
+                .build();
+    }
+
+    private static OAuth2MemberRequest ofNaver (Map<String, Object> attributes){
+        Map<String, Object> response = (Map<String, Object>)attributes.get("response");
+        return OAuth2MemberRequest.builder()
+                .name((String) response.get("nickname"))
+                .email((String) response.get("email"))
+                .profile((String) response.get("profile_image"))
+                .attributes(response)
+                .authProvider(AuthProvider.NAVER.ordinal())
                 .build();
     }
 

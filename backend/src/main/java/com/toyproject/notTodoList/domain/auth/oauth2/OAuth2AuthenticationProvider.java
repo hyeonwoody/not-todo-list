@@ -1,33 +1,20 @@
-package com.toyproject.notTodoList.domain.auth.google;
+package com.toyproject.notTodoList.domain.auth.oauth2;
 
 import com.toyproject.notTodoList.core.security.PrincipalDetails;
 import com.toyproject.notTodoList.domain.auth.application.AuthService;
-import com.toyproject.notTodoList.domain.auth.application.dto.res.LoginResponse;
-import com.toyproject.notTodoList.domain.auth.domain.entity.Auth;
-import com.toyproject.notTodoList.domain.auth.jwt.JwtAuthenticationContext;
-import com.toyproject.notTodoList.domain.auth.jwt.JwtHelper;
 import com.toyproject.notTodoList.domain.auth.jwt.JwtToken;
-import com.toyproject.notTodoList.domain.member.domain.entity.Member;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component
-public class GoogleAuthenticationProvider {
+public class OAuth2AuthenticationProvider implements AuthenticationProvider {
 
-    private final GoogleHelper googleHelper;
+    private final OAuth2Helper OAuth2Helper;
     private final AuthService authService;
 
 
@@ -42,7 +29,7 @@ public class GoogleAuthenticationProvider {
                 .toArray(String[]::new);
         if (authentication.getPrincipal() instanceof PrincipalDetails){
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-            return googleHelper.sign (principalDetails.getMemberId(), roles);
+            return OAuth2Helper.sign (principalDetails.getMemberId(), roles);
         }
         else {
             return null;
@@ -55,5 +42,15 @@ public class GoogleAuthenticationProvider {
             authService.updateRefreshToken(principalDetails.getLoginResponse(), token);
         }
 
+    }
+
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        return null;
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return false;
     }
 }

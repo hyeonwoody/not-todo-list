@@ -20,51 +20,83 @@ public class OAuth2LoginConfig {
 
     @Value("${my.ipAddress}")
     String ipAddress;
-
     @Value("${my.OAuth.google.client-id}")
-    private String clientId;
-
+    private String googleClientId;
     @Value("${my.OAuth.google.client-secret}")
-    private String clientSecret;
-
+    private String googleClientSecret;
     @Value("${my.OAuth.google.redirect-uri}")
-    private String redirectUri;
-
+    private String googleRedirectUri;
     @Value("${my.OAuth.google.scope}")
-    private String scope;
+    private String googleScope;
 
+
+    @Value("${my.OAuth.naver.client-id}")
+    private String naverClientId;
+    @Value("${my.OAuth.naver.client-secret}")
+    private String naverClientSecret;
+    @Value("${my.OAuth.naver.redirect-uri}")
+    private String naverRedirectUri;
+    @Value("${my.OAuth.naver.authorization-uri}")
+    private String naverAuthorizationUri;
+    @Value("${my.OAuth.naver.token-uri}")
+    private String naverTokenUri;
+    @Value("${my.OAuth.naver.user-info-uri}")
+    private String naverUserInfoUri;
+    @Value("${my.OAuth.naver.jwk-set-uri}")
+    private String naverJwkSetUri;
+    @Value("${my.OAuth.naver.scope}")
+    private String naverScope;
 
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
 
-        return new InMemoryClientRegistrationRepository(this.googleClientRegistration());
+        return new InMemoryClientRegistrationRepository(
+                this.googleClientRegistration(),
+                this.naverClientRegistration()
+        );
     }
 
-    private ClientRegistration googleCommonClientRegistration() {
-        return CommonOAuth2Provider.GOOGLE.getBuilder("google")
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .redirectUri("http://localhost"+redirectUri)
-                .build();
-    }
+//    private ClientRegistration googleCommonClientRegistration() {
+//        return CommonOAuth2Provider.GOOGLE.getBuilder("google")
+//                .clientId(clientId)
+//                .clientSecret(clientSecret)
+//                .redirectUri("http://localhost"+redirectUri)
+//                .build();
+//    }
 
     private ClientRegistration googleClientRegistration() {
         return ClientRegistration.withRegistrationId("google")
-                .clientId(clientId)
-                .clientSecret(clientSecret)
+                .clientId(googleClientId)
+                .clientSecret(googleClientSecret)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-
                 //Todo : Setting domain. So that it does not redirect to localhost.
-                .redirectUri("http://localhost"+ redirectUri)
-                .scope(scope.split(",")) //Invalid if the parameter is String type
+                .redirectUri("http://localhost"+ googleRedirectUri)
+                .scope(googleScope.split(",")) //Invalid if the parameter is String type
                 .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
                 .tokenUri("https://www.googleapis.com/oauth2/v4/token")
                 .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
                 .userNameAttributeName(IdTokenClaimNames.SUB)
                 .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
                 .clientName("Google")
+                .build();
+    }
+
+    private ClientRegistration naverClientRegistration() {
+        return ClientRegistration.withRegistrationId("naver")
+                .clientId(naverClientId)
+                .clientSecret(naverClientSecret)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .redirectUri("http://127.0.0.1"+ naverRedirectUri)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .scope(naverScope.split(",")) //Invalid if the parameter is String type
+                .authorizationUri(naverAuthorizationUri)
+                .tokenUri(naverTokenUri)
+                .userInfoUri(naverUserInfoUri)
+                .userNameAttributeName("response")
+                .jwkSetUri(naverJwkSetUri)
+                .clientName("Naver")
                 .build();
     }
 }

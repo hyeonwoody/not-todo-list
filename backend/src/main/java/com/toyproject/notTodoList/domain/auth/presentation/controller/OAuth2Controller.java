@@ -13,5 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/login/oauth2")
 @RequiredArgsConstructor
 public class OAuth2Controller {
-    
+
+    private final AuthService authService;
+
+    @GetMapping("/success")
+    public ResponseEntity<String> googleLogin(@RequestParam("accessToken") String accessToken){
+        System.out.println(accessToken);
+        return ResponseEntity.ok("AAA");
+    }
 }
