@@ -26,6 +26,14 @@ public class OAuth2LoginConfig {
     private String googleClientSecret;
     @Value("${my.OAuth.google.redirect-uri}")
     private String googleRedirectUri;
+    @Value("${my.OAuth.google.authorization-uri}")
+    private String googleAuthorizationUri;
+    @Value("${my.OAuth.google.token-uri}")
+    private String googleTokenUri;
+    @Value("${my.OAuth.google.user-info-uri}")
+    private String googleUserInfoUri;
+    @Value("${my.OAuth.google.jwk-set-uri}")
+    private String googleJwkSetUri;
     @Value("${my.OAuth.google.scope}")
     private String googleScope;
 
@@ -74,11 +82,11 @@ public class OAuth2LoginConfig {
                 //Todo : Setting domain. So that it does not redirect to localhost.
                 .redirectUri("http://localhost"+ googleRedirectUri)
                 .scope(googleScope.split(",")) //Invalid if the parameter is String type
-                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
-                .tokenUri("https://www.googleapis.com/oauth2/v4/token")
-                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
+                .authorizationUri(googleAuthorizationUri)
+                .tokenUri(googleTokenUri)
+                .userInfoUri(googleUserInfoUri)
                 .userNameAttributeName(IdTokenClaimNames.SUB)
-                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+                .jwkSetUri(googleJwkSetUri)
                 .clientName("Google")
                 .build();
     }
