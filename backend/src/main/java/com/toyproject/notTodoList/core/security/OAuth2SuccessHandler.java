@@ -34,6 +34,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         String redirectUrl = UriComponentsBuilder.fromUriString(URI)
                 .queryParam("accessToken", token.getAccessToken())
+                .queryParam("refreshToken", token.getRefreshToken())
                 .build().toUriString();
         System.out.println(redirectUrl);
         response.sendRedirect(redirectUrl);

@@ -17,12 +17,22 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String accessToken;
     private String refreshToken;
     private Date refreshTokenExpiryDate;
 
     @OneToOne (orphanRemoval = true)
     @JoinColumn (name = "member_auth_id")
     private MemberAuth memberAuth;
+
+    @Builder
+    private Token (Long id, String accessToken, String refreshToken, Date refreshTokenExpiryDate, MemberAuth memberAuth){
+        this.id = id;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.refreshTokenExpiryDate = refreshTokenExpiryDate;
+        this.memberAuth = memberAuth;
+    }
 
     @Builder
     private Token (Long id, String refreshToken, Date refreshTokenExpiryDate, MemberAuth memberAuth){

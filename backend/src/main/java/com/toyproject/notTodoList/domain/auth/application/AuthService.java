@@ -75,7 +75,7 @@ public class AuthService {
 
     public void updateRefreshToken(LoginResponse response, JwtToken jwttoken) {
         Long authId = response.getAuths().get(0).getId();
-        Optional<Token> optionalToken = tokenJdbcTemplateRepository.readById(authId);
+        Optional<Token> optionalToken = tokenJdbcTemplateRepository.readBymemberAuthId(authId);
 
         if (optionalToken.isPresent()) {
             Token token = optionalToken.get();
@@ -86,6 +86,7 @@ public class AuthService {
                     .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
             tokenJdbcTemplateRepository.create(Token.builder()
                     .memberAuth(memberAuth)
+                    .accessToken(jwttoken.getAccessToken())
                     .refreshToken(jwttoken.getRefreshToken())
                     .refreshTokenExpiryDate(jwttoken.getRefreshTokenExpiryDate())
                     .build());
