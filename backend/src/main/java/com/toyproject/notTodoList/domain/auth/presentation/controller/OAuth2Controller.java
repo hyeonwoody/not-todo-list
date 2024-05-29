@@ -21,4 +21,9 @@ public class OAuth2Controller {
         System.out.println(accessToken);
         return ResponseEntity.ok("AAA");
     }
+    @GetMapping("/callback/{registrationId}")
+    public ResponseEntity<String> googleLogin(@PathVariable String registrationId, @RequestParam("accessToken") String accessToken, @RequestParam("refreshToken") String refreshToken){
+        System.out.println(accessToken);
+        return ResponseEntity.ok("AAA");
+    }
 }
