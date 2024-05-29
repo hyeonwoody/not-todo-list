@@ -3,6 +3,7 @@ package com.toyproject.notTodoList.domain.auth.jwt;
 import static com.auth0.jwt.JWT.create;
 import static com.auth0.jwt.JWT.require;
 
+import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -17,7 +18,6 @@ import java.util.Map;
 public class JwtHelper {
     private static final String USERID_STR = "userId";
     private static final String ROLES_STR = "roles";
-
 
     private static final Long SECRET_CONVERTION = 3600001L;
 
@@ -73,5 +73,22 @@ public class JwtHelper {
                 .refreshToken(refreshToken)
                 .refreshTokenExpiryDate(calculateExpirySeconds(nowDate, refreshTokenExpirySeconds))
                 .build();
+    }
+
+    public String extractUsername(String token){
+        return JWT.decode(token).getSubject();
+    }
+
+    public Date extractExpiration(String token){
+        return JWT.decode(token).getExpiresAt();
+    }
+
+    public Boolean isTokenExpired(String token){
+        return extractExpiration(token).before(new Date());
+    }
+
+    public Boolean validateToken(String token, String username){
+        final String extractUsername = extractUsername(token);
+        return (extractUsername.equals(username) && !isTokenExpired(token));
     }
 }
