@@ -66,4 +66,12 @@ public class MemberAuthJdbcTemplateRepository {
     }
 
 
+    public Optional<MemberAuth> findByUsername(String username) {
+        String sql = "SELECT ma.* FROM member_auth ma JOIN member m ON m.id = ma.member_id WHERE m.username = ? LIMIT 1";
+        List<MemberAuth> auth = jdbcTemplate.query(sql, (rs, rowNum) -> MemberAuth.builder()
+                        .id(rs.getLong("id"))
+                        .build()
+                , username);
+        return auth.stream().findFirst();
+    }
 }

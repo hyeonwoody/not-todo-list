@@ -75,6 +75,10 @@ public class JwtHelper {
                 .build();
     }
 
+    public Long extractUserId(String token){
+        return JWT.decode(token).getClaim("userId").asLong();
+    }
+
     public String extractUsername(String token){
         return JWT.decode(token).getSubject();
     }
@@ -90,5 +94,15 @@ public class JwtHelper {
     public Boolean validateToken(String token, String username){
         final String extractUsername = extractUsername(token);
         return (extractUsername.equals(username) && !isTokenExpired(token));
+    }
+
+    public String updateRefreshToken() {
+        Date nowDate = dateStrategy.create();
+        String refreshToken = create()
+                .withIssuer(issuer)
+                .withIssuedAt(nowDate)
+                .withExpiresAt(calculateExpirySeconds(nowDate, refreshTokenExpirySeconds))
+                .sign(algorithm);
+        return refreshToken;
     }
 }

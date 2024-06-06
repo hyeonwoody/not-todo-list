@@ -1,5 +1,6 @@
 package com.toyproject.notTodoList.domain.member.infrastructure.jdbc;
 
+import com.toyproject.notTodoList.domain.member.domain.entity.Category;
 import com.toyproject.notTodoList.domain.member.domain.entity.Member;
 import com.toyproject.notTodoList.domain.member.domain.entity.memberAuth.MemberAuth;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -176,11 +177,55 @@ public class MemberJdbcTemplateRepository {
         }
     }
 
+    public List<Category> getCategory(Long memberId){
+        String sql = "SELECT c.* FROM member_categories mc JOIN category c ON mc.category_id = c.category_id WHERE mc.member_id = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum)-> Category.builder()
+                        .id(rs.getLong("id"))
+                        .name(rs.getString("name"))
+                        .build(), memberId);
+    }
+
     public List<MemberAuth> getPermission(Long memberId) {
         String sql = "SELECT id FROM member_auth WHERE member_id = ?";
         return jdbcTemplate.query(sql, (rs, rowNum)-> MemberAuth.builder()
                 .id(rs.getLong("id"))
                 .build(), memberId);
+    }
+
+
+    public Optional <Category> findCategoryByName(Long memberId, String categoryName) {
+        String sql = "SELECT c.* FROM member_categories mc JOIN category c ON mc.category_id = c.category_id WHERE mc.member_id = ? AND c.name = ? LIMIT 1";
+        try (PreparedStatement ps = jdbcTemplate.getDataSource().getConnection().prepareStatement(sql)) {
+            ps.setLong(1, memberId);
+            ps.setString(2, categoryName);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Category category = Category.builder()
+                        .id(rs.getLong("id"))
+                        .name(rs.getString("name"))
+                        .build();
+                return Optional.of(category);
+            } else {
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String findUsernameById(Long memberId) {
+        String sql = "SELECT username FROM member WHERE id = ? LIMIT 1";
+        try (PreparedStatement ps = jdbcTemplate.getDataSource().getConnection().prepareStatement(sql)) {
+            ps.setLong(1, memberId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("username");
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

@@ -1,10 +1,16 @@
 package com.toyproject.notTodoList.domain.auth.jwt;
 
 import com.toyproject.notTodoList.core.security.PrincipalDetails;
+import com.toyproject.notTodoList.domain.auth.application.AuthService;
+import com.toyproject.notTodoList.domain.auth.application.dto.req.JwtFilterRequest;
+import com.toyproject.notTodoList.domain.member.application.service.MemberService;
+import com.toyproject.notTodoList.domain.member.domain.entity.Member;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,24 +28,40 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtHelper jwtHelper;
 
+    private final MemberService memberService;
+    private final AuthService authService;
+
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
 
-        String username = null;
-        String jwt = null;
+        JwtFilterRequest jwtFilterRequest = JwtFilterRequest.builder()
+                .authorization(request.getHeader("Authorization"))
+                .refreshToken(request.getHeader("refresh-token"))
+                .build();
 
+        String username = null;
+        String accessToken = null;
+        Long extractedId = null;
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
-            jwt = authorizationHeader.substring(7);
-            username = jwtHelper.extractUsername(jwt);
+            accessToken = jwtFilterRequest.getAuthorization().substring(7);
+            extractedId = jwtHelper.extractUserId(accessToken);
+            username = memberService.findUsernameById(extractedId);
+            jwtFilterRequest.setUsername(username);
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            if (jwtHelper.validateToken(jwt, username)) {
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        username, null, new ArrayList<>());
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    username, null, new ArrayList<>());
+            if (jwtHelper.isTokenExpired(accessToken)) {
+                String updatedRefreshToken = jwtHelper.updateRefreshToken();
+                jwtFilterRequest.setUpdateRefreshToken(updatedRefreshToken);
+                jwtFilterRequest.setUpdatedExpiryDate(jwtHelper.extractExpiration(updatedRefreshToken));
+                authService.updateRefreshToken(jwtFilterRequest);
             }
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
         filterChain.doFilter(request,response);
     }

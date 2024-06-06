@@ -1,6 +1,7 @@
 package com.toyproject.notTodoList.domain.auth.application;
 
 import com.toyproject.notTodoList.core.properties.ErrorCode;
+import com.toyproject.notTodoList.domain.auth.application.dto.req.JwtFilterRequest;
 import com.toyproject.notTodoList.domain.auth.application.dto.res.LoginResponse;
 import com.toyproject.notTodoList.domain.auth.application.dto.res.RegisterResponse;
 import com.toyproject.notTodoList.domain.auth.application.dto.req.RegisterRequest;
@@ -24,6 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.auth0.jwt.JWT.create;
 
 @Service
 @RequiredArgsConstructor
@@ -73,9 +76,22 @@ public class AuthService {
         });
     }
 
+    public void updateRefreshToken(JwtFilterRequest request){
+        Member member = memberJdbcTemplateRepository.readByUsername (request.getUsername())
+                .orElseThrow(()-> new AuthException(ErrorCode.USER_NOT_FOUND));
+        MemberAuth memberAuth = memberAuthJdbcTemplateRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
+        Optional<Token> optionalToken = tokenJdbcTemplateRepository.readByMemberAuthId(memberAuth.getId());
+        if (optionalToken.isPresent()){
+            Token token = optionalToken.get();
+            token.updateRefreshToken(request.getUpdateRefreshToken(), request.getUpdatedExpiryDate());
+            tokenJdbcTemplateRepository.update(token);
+        }
+    }
+
     public void updateRefreshToken(LoginResponse response, JwtToken jwttoken) {
         Long authId = response.getAuths().get(0).getId();
-        Optional<Token> optionalToken = tokenJdbcTemplateRepository.readBymemberAuthId(authId);
+        Optional<Token> optionalToken = tokenJdbcTemplateRepository.readByMemberAuthId(authId);
 
         if (optionalToken.isPresent()) {
             Token token = optionalToken.get();

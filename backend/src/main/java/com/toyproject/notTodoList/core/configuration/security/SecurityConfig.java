@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/register").permitAll() //Register API
                         .requestMatchers("/api/v1/auth/login").permitAll()//Login API
+                        .requestMatchers("/api/v1/prohibition/**").permitAll()//Login API
 //                        .requestMatchers("/login/oauth2/callback/**").permitAll()
                         .anyRequest().authenticated() //Unauthorized access to others is not allowed
                 )
@@ -93,7 +94,7 @@ public class SecurityConfig {
 
                 .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**"))
                 .requestMatchers(new AntPathRequestMatcher("/index.html"))
-                //.requestMatchers(new AntPathRequestMatcher("/login/oauth2/**"))
+//                .requestMatchers(new AntPathRequestMatcher("/api/v1/prohibition/**"))
                 ;
     }
 
