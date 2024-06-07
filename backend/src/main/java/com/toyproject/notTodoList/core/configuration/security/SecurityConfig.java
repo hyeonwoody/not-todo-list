@@ -63,7 +63,6 @@ public class SecurityConfig {
                         .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
                         )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 //.httpBasic(withDefaults())
 
 
