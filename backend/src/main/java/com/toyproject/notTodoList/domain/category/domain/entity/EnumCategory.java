@@ -1,4 +1,4 @@
-package com.toyproject.notTodoList.domain.member.domain.entity;
+package com.toyproject.notTodoList.domain.category.domain.entity;
 
 import jakarta.persistence.*;
 

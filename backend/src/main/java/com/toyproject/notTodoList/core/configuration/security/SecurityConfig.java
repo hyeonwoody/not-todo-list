@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -45,7 +44,6 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
 
-
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS)) //Set as STATELESS since not using sessions
@@ -53,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/register").permitAll() //Register API
                         .requestMatchers("/api/v1/auth/login").permitAll()//Login API
                         .requestMatchers("/api/v1/prohibition/**").permitAll()//Login API
+                        .requestMatchers("/api/v1/category/**").permitAll()//Login API
 //                        .requestMatchers("/login/oauth2/callback/**").permitAll()
                         .anyRequest().authenticated() //Unauthorized access to others is not allowed
                 )

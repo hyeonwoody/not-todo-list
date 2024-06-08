@@ -1,11 +1,17 @@
-package com.toyproject.notTodoList.domain.member.domain.entity;
+package com.toyproject.notTodoList.domain.category.domain.entity;
 
+import com.toyproject.notTodoList.domain.member.domain.entity.Member;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
 @Table(name = "category", schema = "user")
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Category {
 
     @Id
