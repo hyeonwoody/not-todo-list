@@ -23,9 +23,9 @@ public class Category {
 
     @ManyToMany
     @JoinTable(
-            name = "member_categories", // Name of the junction table
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
+            name = "member_categories",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "member_id")
     )
     private Set<Member> members;
 }

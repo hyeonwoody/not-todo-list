@@ -1,9 +1,8 @@
 package com.toyproject.notTodoList.domain.member.infrastructure.jdbc;
 
-import com.toyproject.notTodoList.domain.member.domain.entity.Category;
+import com.toyproject.notTodoList.domain.category.domain.entity.Category;
 import com.toyproject.notTodoList.domain.member.domain.entity.Member;
 import com.toyproject.notTodoList.domain.member.domain.entity.memberAuth.MemberAuth;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -194,7 +193,7 @@ public class MemberJdbcTemplateRepository {
 
 
     public Optional <Category> findCategoryByName(Long memberId, String categoryName) {
-        String sql = "SELECT c.* FROM member_categories mc JOIN category c ON mc.category_id = c.category_id WHERE mc.member_id = ? AND c.name = ? LIMIT 1";
+        String sql = "SELECT c.* FROM member_categories mc JOIN category c ON mc.category_id = c.id WHERE mc.member_id = ? AND c.name = ? LIMIT 1";
         try (PreparedStatement ps = jdbcTemplate.getDataSource().getConnection().prepareStatement(sql)) {
             ps.setLong(1, memberId);
             ps.setString(2, categoryName);
